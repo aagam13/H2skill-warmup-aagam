@@ -1,1 +1,0 @@
-# H2skill-warmup-aagam
