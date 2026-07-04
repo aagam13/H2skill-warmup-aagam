@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CookPlan AI — Test Runner</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Inter:wght@400;500&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0b0d12;
+      color: #f1f5f9;
+      min-height: 100vh;
+      padding: 40px 20px 80px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .runner-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .runner-header h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #f59e0b, #f97316);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+
+    .runner-header p { color: #94a3b8; font-size: 0.9rem; }
+
+    .summary {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+    }
+
+    .summary-card {
+      padding: 16px 32px;
+      border-radius: 12px;
+      text-align: center;
+      font-family: 'Outfit', sans-serif;
+      border: 1px solid;
+    }
+
+    .summary-card.total  { border-color: rgba(255,255,255,0.1); background: rgba(255,255,255,0.04); }
+    .summary-card.passed { border-color: rgba(16,185,129,0.3);  background: rgba(16,185,129,0.08); }
+    .summary-card.failed { border-color: rgba(239,68,68,0.3);   background: rgba(239,68,68,0.08); }
+
+    .summary-card .num {
+      font-size: 2.5rem;
+      font-weight: 800;
+      line-height: 1;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .summary-card.passed .num { color: #10b981; }
+    .summary-card.failed .num { color: #ef4444; }
+    .summary-card.total  .num { color: #f59e0b; }
+    .summary-card .lbl { font-size: 0.78rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.08em; }
+
+    .progress-bar {
+      max-width: 600px;
+      margin: 0 auto 32px;
+      height: 6px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 99px;
+      transition: width 0.6s ease;
+      background: linear-gradient(90deg, #10b981, #34d399);
+    }
+
+    .test-groups { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+
+    .test-result {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 14px 18px;
+      border-radius: 10px;
+      border: 1px solid;
+      animation: fadeIn 0.2s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .test-result.pass {
+      border-color: rgba(16,185,129,0.2);
+      background: rgba(16,185,129,0.05);
+    }
+
+    .test-result.fail {
+      border-color: rgba(239,68,68,0.3);
+      background: rgba(239,68,68,0.08);
+    }
+
+    .test-icon {
+      font-size: 1.1rem;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .test-name {
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #e2e8f0;
+      flex: 1;
+    }
+
+    .test-error {
+      font-size: 0.78rem;
+      color: #f87171;
+      margin-top: 4px;
+      font-family: 'Courier New', monospace;
+      white-space: pre-wrap;
+    }
+
+    .section-header {
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #475569;
+      padding: 6px 4px;
+      margin-top: 16px;
+    }
+
+    .all-pass-banner {
+      text-align: center;
+      padding: 24px;
+      background: rgba(16,185,129,0.08);
+      border: 1px solid rgba(16,185,129,0.25);
+      border-radius: 12px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #10b981;
+      margin-bottom: 24px;
+      max-width: 760px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 40px;
+      color: #94a3b8;
+      text-decoration: none;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+    }
+    .back-link:hover { color: #f59e0b; }
+  </style>
+</head>
+<body>
+
+<div class="runner-header">
+  <h1>🧪 CookPlan AI — Test Runner</h1>
+  <p>Running unit tests across all four modules...</p>
+</div>
+
+<!-- Modules under test -->
+<script src="../js/mealsData.js"></script>
+<script src="../js/mealEngine.js"></script>
+<script src="../js/groceryBuilder.js"></script>
+<script src="../js/substitutions.js"></script>
+<script src="../js/budgetAnalyzer.js"></script>
+
+<!-- Lightweight test framework -->
+<script>
+  (function () {
+    var _tests   = [];
+    var _passed  = 0;
+    var _failed  = 0;
+
+    window.test = function (name, fn) {
+      var result = { name: name };
+      try {
+        fn();
+        result.status = 'pass';
+        _passed++;
+      } catch (e) {
+        result.status = 'fail';
+        result.error  = e.message || String(e);
+        _failed++;
+      }
+      _tests.push(result);
+    };
+
+    window.assert = function (condition, message) {
+      if (!condition) throw new Error(message || 'Assertion failed');
+    };
+
+    window.assertEqual = function (a, b, message) {
+      if (a !== b) throw new Error(message || ('Expected ' + JSON.stringify(b) + ', got ' + JSON.stringify(a)));
+    };
+
+    window.assertDeepEqual = function (a, b, message) {
+      if (JSON.stringify(a) !== JSON.stringify(b)) {
+        throw new Error(message || ('Expected ' + JSON.stringify(b) + ', got ' + JSON.stringify(a)));
+      }
+    };
+
+    window.assertContains = function (arr, val, message) {
+      if (!arr.includes(val)) throw new Error(message || (JSON.stringify(val) + ' not found in array'));
+    };
+
+    window._renderResults = function () {
+      var total = _passed + _failed;
+      var pct   = total > 0 ? Math.round((_passed / total) * 100) : 0;
+
+      document.getElementById('total-count').textContent = total;
+      document.getElementById('passed-count').textContent = _passed;
+      document.getElementById('failed-count').textContent = _failed;
+      document.getElementById('progress-fill').style.width = pct + '%';
+
+      if (_failed === 0) {
+        var banner = document.getElementById('all-pass-banner');
+        banner.textContent = '🎉 All ' + total + ' tests passed!';
+        banner.style.display = 'block';
+      }
+
+      var container = document.getElementById('test-results');
+      _tests.forEach(function (t, i) {
+        // Detect section headers by naming convention (module: prefix)
+        var prevModule = i > 0 ? _tests[i-1].name.split(':')[0] : '';
+        var thisModule = t.name.split(':')[0];
+        if (thisModule !== prevModule) {
+          var hdr = document.createElement('div');
+          hdr.className = 'section-header';
+          hdr.textContent = '── ' + thisModule.trim();
+          container.appendChild(hdr);
+        }
+
+        var div = document.createElement('div');
+        div.className = 'test-result ' + t.status;
+        div.setAttribute('role', t.status === 'pass' ? 'listitem' : 'alert');
+
+        var icon = document.createElement('span');
+        icon.className = 'test-icon';
+        icon.textContent = t.status === 'pass' ? '✅' : '❌';
+        icon.setAttribute('aria-hidden', 'true');
+
+        var inner = document.createElement('div');
+        inner.style.flex = '1';
+
+        var name = document.createElement('div');
+        name.className = 'test-name';
+        name.textContent = t.name;
+        inner.appendChild(name);
+
+        if (t.error) {
+          var err = document.createElement('div');
+          err.className = 'test-error';
+          err.textContent = t.error;
+          inner.appendChild(err);
+        }
+
+        div.appendChild(icon);
+        div.appendChild(inner);
+        container.appendChild(div);
+      });
+    };
+  }());
+</script>
+
+<!-- Static DOM — must come BEFORE dynamic scripts -->
+<div class="summary">
+  <div class="summary-card total">
+    <span class="num" id="total-count">0</span>
+    <span class="lbl">Total</span>
+  </div>
+  <div class="summary-card passed">
+    <span class="num" id="passed-count">0</span>
+    <span class="lbl">Passed</span>
+  </div>
+  <div class="summary-card failed">
+    <span class="num" id="failed-count">0</span>
+    <span class="lbl">Failed</span>
+  </div>
+</div>
+
+<div class="progress-bar">
+  <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+</div>
+
+<div class="all-pass-banner" id="all-pass-banner" style="display:none;"></div>
+
+<div class="test-groups" id="test-results" role="list" aria-label="Test results"></div>
+
+<a href="../index.html" class="back-link">← Back to CookPlan AI App</a>
+
+<!-- Load test definitions (must come after DOM) -->
+<script src="unit.test.js"></script>
+
+<!-- Render results (must come after tests run) -->
+<script>
+  window._renderResults();
+</script>
+
+</body>
+</html>

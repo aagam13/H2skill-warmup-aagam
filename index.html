@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="CookPlan AI — Generate a personalised daily meal plan with grocery list, substitutions, and budget analysis in seconds." />
+  <meta name="keywords" content="meal planning, cooking, grocery list, recipe, budget, AI meal planner" />
+  <meta name="author" content="CookPlan AI" />
+  <meta property="og:title" content="CookPlan AI — Smart Daily Meal Planner" />
+  <meta property="og:description" content="Plan your breakfast, lunch, and dinner in under 60 seconds. Get a full grocery list, ingredient substitutions, and budget feasibility analysis." />
+  <meta property="og:type" content="website" />
+
+  <!-- Content Security Policy: no inline eval, only same-origin scripts -->
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:;" />
+
+  <title>🍳 CookPlan AI — Smart Meal Planner</title>
+  <link rel="stylesheet" href="styles/index.css" />
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════════════
+       SKIP LINK (accessibility)
+       ══════════════════════════════════════════════ -->
+  <a href="#main-content" class="sr-only" style="position:absolute;top:0;left:0;z-index:9999;padding:8px 16px;background:var(--amber);color:#000;border-radius:0 0 8px 0;font-weight:700;">
+    Skip to main content
+  </a>
+
+  <!-- ══════════════════════════════════════════════
+       HEADER
+       ══════════════════════════════════════════════ -->
+  <header class="app-header" role="banner">
+    <a href="#" class="app-logo" aria-label="CookPlan AI — go to home">
+      <div class="app-logo__icon" aria-hidden="true">🍳</div>
+      <div>
+        <span class="app-logo__text">CookPlan AI</span>
+        <span class="app-logo__sub">Smart Daily Meal Planner</span>
+      </div>
+    </a>
+
+    <!-- Progress Stepper -->
+    <nav aria-label="Setup progress">
+      <ol class="progress-stepper" role="list">
+        <li class="progress-step" role="listitem">
+          <div class="progress-step__dot" id="step-dot-1" aria-current="step" aria-label="Step 1: Preferences — current step">1</div>
+          <span class="progress-step__label" aria-hidden="true">Prefs</span>
+        </li>
+        <li class="progress-step" role="listitem" aria-hidden="true">
+          <div class="progress-step__line" id="step-line-1"></div>
+        </li>
+        <li class="progress-step" role="listitem">
+          <div class="progress-step__dot" id="step-dot-2" aria-label="Step 2: Meal Plan">2</div>
+          <span class="progress-step__label" aria-hidden="true">Plan</span>
+        </li>
+        <li class="progress-step" role="listitem" aria-hidden="true">
+          <div class="progress-step__line" id="step-line-2"></div>
+        </li>
+        <li class="progress-step" role="listitem">
+          <div class="progress-step__dot" id="step-dot-3" aria-label="Step 3: Grocery List">3</div>
+          <span class="progress-step__label" aria-hidden="true">Shop</span>
+        </li>
+        <li class="progress-step" role="listitem" aria-hidden="true">
+          <div class="progress-step__line" id="step-line-3"></div>
+        </li>
+        <li class="progress-step" role="listitem">
+          <div class="progress-step__dot" id="step-dot-4" aria-label="Step 4: Substitutions">4</div>
+          <span class="progress-step__label" aria-hidden="true">Swaps</span>
+        </li>
+        <li class="progress-step" role="listitem" aria-hidden="true">
+          <div class="progress-step__line" id="step-line-4"></div>
+        </li>
+        <li class="progress-step" role="listitem">
+          <div class="progress-step__dot" id="step-dot-5" aria-label="Step 5: Budget">5</div>
+          <span class="progress-step__label" aria-hidden="true">Budget</span>
+        </li>
+      </ol>
+    </nav>
+  </header>
+
+  <!-- ══════════════════════════════════════════════
+       MAIN CONTENT
+       ══════════════════════════════════════════════ -->
+  <main id="main-content" class="app-main" role="main">
+    <div class="step-container" id="step-container">
+      <!-- Rendered dynamically by app.js -->
+      <noscript>
+        <div style="text-align:center;padding:60px 20px;color:#94a3b8;">
+          <p style="font-size:3rem;margin-bottom:16px;">⚠️</p>
+          <p style="font-size:1.1rem;">CookPlan AI requires JavaScript to run.</p>
+          <p>Please enable JavaScript in your browser and refresh the page.</p>
+        </div>
+      </noscript>
+    </div>
+  </main>
+
+  <!-- ══════════════════════════════════════════════
+       TOAST CONTAINER
+       ══════════════════════════════════════════════ -->
+  <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- ══════════════════════════════════════════════
+       JAVASCRIPT — loaded in dependency order
+       ══════════════════════════════════════════════ -->
+  <script src="js/mealsData.js"></script>
+  <script src="js/mealEngine.js"></script>
+  <script src="js/groceryBuilder.js"></script>
+  <script src="js/substitutions.js"></script>
+  <script src="js/budgetAnalyzer.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>
